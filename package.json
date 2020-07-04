@@ -1,10 +1,11 @@
 {
   "name": "negan",
-  "version": "1.0.0",
+  "version": "12.18.0",
   "description": "a",
   "main": "a",
   "scripts": {
-    "test": "node index"
+    "test": "node index",
+    "start": "index.js"
   },
   "repository": {
     "type": "git",
@@ -20,6 +21,14 @@
   },
   "homepage": "https://github.com/ParitWy/negan#readme",
   "dependencies": {
-    "discord.js": "^12.2.0"
-  }
+    "country-flags-svg": "^0.2.12",
+    "discord-giveaways": "^4.1.8",
+    "discord.js": "^12.2.0",
+    "fs": "0.0.1-security",
+    "ms": "^2.1.2",
+    "node-fetch": "^2.6.0",
+    "random-country": "^1.0.1",
+    "risibank": "^1.0.2"
+  },
+  "devDependencies": {}
 }

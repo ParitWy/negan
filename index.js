@@ -1,19 +1,41 @@
 const discord = require('discord.js');
+const prefix = "n!"
 const client = new discord.Client();
-let prefix = "N!"
-client.on("ready", ()=>{
-    console.log("ok")
+client.commands = new discord.Collection();
+client.aliases = new discord.Collection();
+const fetch = require('node-fetch');
+const fs = require('fs');
+const commandFiles = fs.readdirSync('./commands').filter(file => file.endsWith('.js'));
+fs.readdir("./commands/", (err, files) => {
+  if (err) return console.log(err);
+  files.forEach(file => {
+      if (!file.endsWith(".js")) return;
+      let command = require(`./commands/${file}`);
+      console.log("Successfully loaded " + file)
+      client.commands.set(command.name, command);
+  });
 });
-client.on("message",msg => {
-    if (!msg.content.startsWith(prefix) || msg.author.bot) return;
-    const args = msg.content.slice(prefix.length).split(/ +/);
-    const command = args.shift().toLowerCase();
-    const args_s = msg.content.slice(command.length + prefix.length);
 
-    if(command == "say"){
-        msg.channel.send(args_s);
-        msg.delete();
-        
-    }
-})
-client.login("NzI2NTE5MTk1OTgxOTcxNTI4.Xved0w.yw7s4W-lYPhe_Z4AqHGMN_LA7pc")
+client.on("ready", ()=>{
+    console.log("ok");
+    client.user.setActivity(`n!help`, {type: "PLAYING"}); 
+    });
+ 
+client.on('message',message => {
+  if (!message.content.toLowerCase().startsWith(prefix) || message.author.bot) return;
+  const args = message.content.slice(prefix.length).split(/ +/);
+  const commandName = args.shift().toLowerCase() || client.commands.find(cmd => cmd.aliases);
+  if (!client.commands.has(commandName)){
+    message.channel.send(commandName+" n'est pas une commande")
+    return;}
+
+try {
+	const command = client.commands.get(commandName);
+command.execute(message,args);
+} catch (error) {
+	console.error(error);
+	message.reply("y'a une erreur");
+}
+})    
+
+client.login("NzI3OTA4MzU0NjM4MjE3Mjk2.Xvyrkg.egebjvn1iBqWosIZSZlvpNcEqNI");
