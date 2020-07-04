@@ -38,4 +38,4 @@ command.execute(message,args);
 }
 })    
 
-client.login("NzI3OTA4MzU0NjM4MjE3Mjk2.Xvyrkg.egebjvn1iBqWosIZSZlvpNcEqNI");
+client.login(process.env.token);
