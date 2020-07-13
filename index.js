@@ -3,6 +3,7 @@ const prefix = "n!"
 const client = new discord.Client();
 client.commands = new discord.Collection();
 client.aliases = new discord.Collection();
+const token = require('./token.json').token
 const fetch = require('node-fetch');
 const fs = require('fs');
 const commandFiles = fs.readdirSync('./commands').filter(file => file.endsWith('.js'));
@@ -65,4 +66,4 @@ command.execute(message,args);
 }
 })    
 
-client.login("NzI3OTA4MzU0NjM4MjE3Mjk2.XwM23w.hY36mT76f3zcXQWmpyPWj5_dz94");
+client.login(process.env.TOKEN);
