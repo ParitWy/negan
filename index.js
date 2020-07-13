@@ -6,6 +6,13 @@ client.aliases = new discord.Collection();
 const fetch = require('node-fetch');
 const fs = require('fs');
 const commandFiles = fs.readdirSync('./commands').filter(file => file.endsWith('.js'));
+const mysql = require('mysql');
+const connection = mysql.createPool({
+  host:'localhost'|| process.env.HOST,
+  user: 'root' || process.env.USER,
+  password: '' || process.env.PASSWORD,
+  database: 'negan' || process.env.DATABASE 
+});
 fs.readdir("./commands/", (err, files) => {
   if (err) return console.log(err);
   files.forEach(file => {
@@ -22,7 +29,27 @@ client.on("ready", ()=>{
     });
  
 client.on('message',message => {
-  if (!message.content.toLowerCase().startsWith(prefix) || message.author.bot) return;
+  if(message.author.bot)return;
+  connection.query(`SELECT * FROM users WHERE id = ${message.author.id}`,(err,rows)=>{
+    rowCount = 0;
+    rows.forEach(row=>{rowCount++})
+    if(rowCount == 0){
+      connection.query(`INSERT INTO users (id,xp,level) VALUES (${message.author.id},0,1)`);
+    }
+    else{
+      connection.query(`UPDATE users SET xp=xp+${Math.floor(Math.random()*7)} WHERE id=${message.author.id}`);
+      connection.query(`SELECT * FROM users WHERE id=${message.author.id}`,(err,rows)=>{
+        let xp = rows[0].xp;
+        let level = rows[0].level;
+        let nextlevel = level * 200;
+        if(xp > nextlevel){
+          message.channel.send(`${message.author.username} est maintenant niveau ${level+1}`);
+          connection.query(`UPDATE users SET level=level+1 WHERE id=${message.author.id}`);
+        }
+      })
+    }
+  })
+  if (!message.content.toLowerCase().startsWith(prefix)) return;
   const args = message.content.slice(prefix.length).split(/ +/);
   const commandName = args.shift().toLowerCase() || client.commands.find(cmd => cmd.aliases);
   if (!client.commands.has(commandName)){
@@ -38,4 +65,4 @@ command.execute(message,args);
 }
 })    
 
-client.login(process.env.token);
+client.login("NzI3OTA4MzU0NjM4MjE3Mjk2.XwM23w.hY36mT76f3zcXQWmpyPWj5_dz94");

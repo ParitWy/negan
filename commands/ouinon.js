@@ -6,7 +6,7 @@ module.exports = {
     const embed = new discord.MessageEmbed()
     .setAuthor(message.author.username,message.author.displayAvatarURL())
     .setTitle(args.join(" "))
-    .setDescription(`**reponse : ${choices[Math.floor(Math.random() * choices.length)]}`);
+    .setDescription(`**reponse :** ${choices[Math.floor(Math.random() * choices.length)]}`);
     message.channel.send(embed);
     }
 }
